@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Creative Sprint Report — Home Internet Category Test</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #F7F8FA;
+    --surface: #FFFFFF;
+    --border: #E5E7EB;
+    --text: #111827;
+    --body: #374151;
+    --subtle: #6B7280;
+    --accent: #d9008d;
+    --accent-light: #FDF0F8;
+    --green: #059669;
+    --green-light: #ECFDF5;
+    --amber: #D97706;
+    --amber-light: #FFFBEB;
+    --teal: #0D9488;
+    --teal-light: #F0FDFA;
+    --radius: 12px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.05);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+  }
+
+  body {
+    font-family: 'Noto Sans', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 15px;
+  }
+
+  .container { max-width: 860px; margin: 0 auto; padding: 0 24px; }
+  section { padding: 56px 0; border-bottom: 1px solid var(--border); }
+  section:last-child { border-bottom: none; }
+
+  /* ── Header ── */
+  .page-header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 0;
+    position: sticky; top: 0; z-index: 10;
+    box-shadow: var(--shadow);
+  }
+  .page-header .container { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .wiom-logo { display: flex; align-items: center; gap: 8px; }
+  .header-meta { display: flex; gap: 12px; align-items: center; }
+  .header-meta span { font-size: 12px; color: var(--subtle); font-weight: 500; }
+  .header-meta .dot { color: var(--border); }
+
+  /* ── Hero ── */
+  .hero { background: var(--surface); padding: 64px 0; }
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--accent-light); color: var(--accent);
+    font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; padding: 5px 12px; border-radius: 100px;
+    margin-bottom: 24px;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 4vw, 42px); font-weight: 800;
+    line-height: 1.2; letter-spacing: -0.02em; margin-bottom: 16px;
+  }
+  .hero h1 em { font-style: normal; color: var(--accent); }
+  .hero-sub {
+    font-size: 17px; color: var(--body); max-width: 560px;
+    margin-bottom: 40px; line-height: 1.7;
+  }
+  .meta-pills { display: flex; flex-wrap: wrap; gap: 10px; }
+  .meta-pill {
+    background: var(--bg); border: 1px solid var(--border);
+    padding: 7px 14px; border-radius: 100px;
+    font-size: 13px; font-weight: 500; color: var(--body);
+    display: flex; align-items: center; gap: 6px;
+  }
+
+  /* ── Section labels ── */
+  .section-label {
+    display: inline-block; font-size: 10px; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 8px;
+  }
+  .section-title {
+    font-size: clamp(22px, 3vw, 30px); font-weight: 800;
+    letter-spacing: -0.02em; margin-bottom: 8px; line-height: 1.25;
+  }
+  .section-desc { font-size: 15px; color: var(--body); max-width: 600px; margin-bottom: 36px; line-height: 1.7; }
+
+  /* ── Learning cards ── */
+  .learnings-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 16px;
+  }
+  .learning-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 24px;
+    box-shadow: var(--shadow); transition: box-shadow 0.2s;
+  }
+  .learning-card:hover { box-shadow: var(--shadow-md); }
+  .learning-tag {
+    display: inline-block; font-size: 10px; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 3px 9px; border-radius: 100px; margin-bottom: 12px;
+  }
+  .tag-green { background: var(--green-light); color: var(--green); }
+  .tag-amber { background: var(--amber-light); color: var(--amber); }
+  .tag-blue  { background: var(--accent-light); color: var(--accent); }
+  .tag-teal  { background: var(--teal-light); color: var(--teal); }
+  .learning-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 8px; line-height: 1.4; }
+  .learning-card p  { font-size: 13px; color: var(--body); line-height: 1.6; }
+
+  /* ── Stats ── */
+  .stats-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; margin-bottom: 48px; }
+  .stat-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 24px 20px;
+    box-shadow: var(--shadow); text-align: center;
+  }
+  .stat-num {
+    font-size: 36px; font-weight: 800; letter-spacing: -0.03em;
+    line-height: 1; margin-bottom: 6px;
+  }
+  .stat-label { font-size: 12px; color: var(--subtle); font-weight: 500; line-height: 1.4; }
+
+  /* ── Pivot charts ── */
+  .pivot-block { margin-bottom: 44px; }
+  .pivot-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; color: var(--text); }
+  .pivot-desc  { font-size: 13px; color: var(--subtle); margin-bottom: 20px; }
+
+  .bar-chart { display: flex; flex-direction: column; gap: 10px; }
+  .bar-row   { display: flex; align-items: center; gap: 12px; }
+  .bar-label { font-size: 12px; font-weight: 500; width: 190px; flex-shrink: 0; text-align: right; color: var(--body); }
+  .bar-track {
+    flex: 1; position: relative; height: 30px;
+    background: var(--bg); border-radius: 6px; overflow: hidden;
+    display: flex; align-items: center;
+  }
+  .bar-fill  { height: 100%; border-radius: 6px; }
+  .bar-val   {
+    font-size: 12px; font-weight: 600; color: var(--subtle);
+    position: absolute; right: 10px; white-space: nowrap;
+  }
+  .bar-wifi     { background: #D1FAE5; border-right: 3px solid var(--green); }
+  .bar-net      { background: var(--accent-light); border-right: 3px solid var(--accent); }
+  .bar-recharge { background: var(--amber-light); border-right: 3px solid var(--amber); }
+  .bar-muted    { background: #F3F4F6; border-right: 3px solid #D1D5DB; }
+  .bar-teal     { background: var(--teal-light); border-right: 3px solid var(--teal); }
+
+  /* ── Cross-table ── */
+  .cross-table {
+    width: 100%; border-collapse: collapse;
+    font-size: 13px; background: var(--surface);
+    border-radius: var(--radius); overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  .cross-table th {
+    background: var(--bg); padding: 10px 14px;
+    text-align: center; font-weight: 700; font-size: 11px;
+    text-transform: uppercase; letter-spacing: 0.05em;
+    color: var(--subtle); border-bottom: 2px solid var(--border);
+  }
+  .cross-table th:first-child { text-align: left; }
+  .cross-table td {
+    padding: 10px 14px; border-bottom: 1px solid var(--border);
+    text-align: center; color: var(--body);
+  }
+  .cross-table td.row-label {
+    text-align: left; font-weight: 600; color: var(--text); min-width: 140px;
+  }
+  .lbl-wifi     { color: var(--green); }
+  .lbl-net      { color: var(--accent); }
+  .lbl-recharge { color: var(--amber); }
+  .lbl-none     { color: var(--subtle); }
+  .cross-table td.hl { font-weight: 700; color: var(--text); background: #FFFBEB; }
+  .cross-table td.total-col { font-weight: 700; color: var(--text); }
+  .cross-table tr.grand-row td {
+    background: var(--bg); font-weight: 700;
+    border-top: 2px solid var(--border);
+  }
+
+  /* ── Creative cards ── */
+  .creatives-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 20px; }
+  .creative-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); overflow: hidden;
+    box-shadow: var(--shadow); transition: box-shadow 0.2s;
+  }
+  .creative-card:hover { box-shadow: var(--shadow-md); }
+  .creative-visual {
+    background: linear-gradient(160deg, #C8955A 0%, #B07840 30%, #8B6035 100%);
+    padding: 28px 24px 22px;
+    min-height: 180px; display: flex; flex-direction: column;
+    justify-content: space-between; position: relative; overflow: hidden;
+  }
+  .creative-visual::after {
+    content: ''; position: absolute; bottom: 0; right: 0;
+    width: 120px; height: 120px;
+    background: rgba(255,255,255,0.04); border-radius: 50% 0 0 0;
+  }
+  .creative-type-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: rgba(255,255,255,0.18); backdrop-filter: blur(4px);
+    color: #fff; font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    padding: 4px 10px; border-radius: 100px; margin-bottom: 14px;
+    width: fit-content;
+  }
+  .creative-headline { font-size: 18px; font-weight: 800; color: #fff; line-height: 1.3; margin-bottom: 8px; }
+  .creative-tagline  { font-size: 13px; color: rgba(255,255,255,0.8); font-weight: 500; line-height: 1.5; }
+  .creative-brand {
+    font-size: 11px; color: rgba(255,255,255,0.5); font-weight: 600;
+    letter-spacing: 0.05em;
+    border-top: 1px solid rgba(255,255,255,0.15);
+    padding-top: 10px; margin-top: 12px;
+  }
+
+  /* ── Creative meta with data ── */
+  .creative-meta { padding: 18px 20px; }
+  .creative-meta-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 16px; gap: 8px;
+  }
+  .email-badge {
+    font-size: 11px; font-weight: 600; color: var(--accent);
+    background: var(--accent-light); padding: 4px 10px;
+    border-radius: 100px; white-space: nowrap;
+  }
+  .n-badge {
+    font-size: 11px; font-weight: 700; color: var(--subtle);
+    background: var(--bg); border: 1px solid var(--border);
+    padding: 4px 10px; border-radius: 100px; white-space: nowrap;
+  }
+
+  /* ── Mini bars (inside cards) ── */
+  .mini-bars { margin-bottom: 14px; }
+  .mini-bar-label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--subtle); margin-bottom: 8px;
+  }
+  .mini-bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+  .mini-cat { font-size: 11px; color: var(--body); width: 75px; flex-shrink: 0; }
+  .mini-track {
+    flex: 1; height: 14px; background: var(--bg);
+    border-radius: 3px; overflow: hidden;
+  }
+  .mini-fill { height: 100%; border-radius: 3px; }
+  .mini-val { font-size: 11px; font-weight: 600; color: var(--subtle); width: 52px; text-align: right; flex-shrink: 0; }
+
+  .mini-wifi     { background: #D1FAE5; }
+  .mini-net      { background: var(--accent-light); }
+  .mini-recharge { background: var(--amber-light); }
+  .mini-muted    { background: #F3F4F6; }
+
+  /* ── Key finding ── */
+  .key-finding {
+    background: var(--bg); border-radius: 8px;
+    padding: 10px 12px; display: flex; gap: 8px; align-items: flex-start;
+  }
+  .kf-label {
+    font-size: 9px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--subtle);
+    flex-shrink: 0; padding-top: 2px;
+  }
+  .kf-text { font-size: 12px; color: var(--body); line-height: 1.5; }
+
+  /* ── No-data card ── */
+  .no-wifi-tag {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--green-light); color: var(--green);
+    font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 100px;
+  }
+  .video-note { font-size: 12px; color: var(--subtle); font-style: italic; margin-top: 10px; }
+
+  /* ── Placeholder section ── */
+  .placeholder-section {
+    background: var(--bg); border: 2px dashed var(--border);
+    border-radius: var(--radius); padding: 40px;
+    text-align: center; color: var(--subtle);
+  }
+  .placeholder-section .big-icon { font-size: 32px; margin-bottom: 12px; }
+  .placeholder-section h3 { font-size: 16px; font-weight: 700; color: var(--body); margin-bottom: 6px; }
+  .placeholder-section p { font-size: 14px; }
+
+  /* ── Footer ── */
+  .page-footer {
+    padding: 32px 0; text-align: center;
+    font-size: 12px; color: var(--subtle);
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 640px) {
+    .hero h1 { font-size: 26px; }
+    .creatives-grid { grid-template-columns: 1fr; }
+    .learnings-grid { grid-template-columns: 1fr; }
+    .bar-label { width: 110px; font-size: 11px; }
+    section { padding: 40px 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── Sticky header ── -->
+<header class="page-header">
+  <div class="container">
+    <div class="wiom-logo">
+      <svg viewBox="0 0 58 50" fill="none" xmlns="http://www.w3.org/2000/svg" height="30" style="flex-shrink:0">
+        <path d="M 32 25 C 28 5, -1 3, 2 21 C 5 39, 26 46, 32 25" stroke="#d9008d" stroke-width="4.5" stroke-linecap="round" fill="none"/>
+        <path d="M 32 25 C 35 9, 56 9, 56 25 C 56 41, 35 42, 32 25" stroke="#d9008d" stroke-width="4.5" stroke-linecap="round" fill="none"/>
+        <circle cx="11" cy="5" r="4" fill="#d9008d"/>
+        <circle cx="11" cy="45" r="4" fill="#d9008d"/>
+      </svg>
+      <span style="color:#d9008d;font-weight:800;font-size:22px;letter-spacing:-0.3px;font-family:'Noto Sans',sans-serif;">Wiom</span>
+    </div>
+    <div class="header-meta">
+      <span>Creative Sprint</span>
+      <span class="dot">·</span>
+      <span>May 2026</span>
+      <span class="dot">·</span>
+      <span>Comms Team</span>
+    </div>
+  </div>
+</header>
+
+<!-- ── Hero ── -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-eyebrow">▣ Ground Test · Field Research</div>
+    <h1>Can we invoke <em>home internet</em><br>without a router in frame?</h1>
+    <p class="hero-sub">
+      Four of us went on the ground to test a set of creatives with one core question:
+      can we make people recognise the category of home broadband
+      using context and copy alone, with no WiFi symbol or router imagery?
+    </p>
+    <div class="meta-pills">
+      <span class="meta-pill">👥 Team of 4</span>
+      <span class="meta-pill">🖼 3 Static creatives</span>
+      <span class="meta-pill">▶ 1 Video creative</span>
+      <span class="meta-pill">📍 On-ground field test</span>
+      <span class="meta-pill">👤 44 respondents</span>
+    </div>
+  </div>
+</section>
+
+<!-- ── KEY LEARNINGS ── -->
+<section id="learnings">
+  <div class="container">
+    <span class="section-label">What we found</span>
+    <h2 class="section-title">Key Learnings</h2>
+    <p class="section-desc">
+      The creative succeeded at explaining the recharge mechanic but failed to anchor the product category.
+      Flexibility landed. Home internet did not.
+    </p>
+
+    <div class="learnings-grid">
+      <div class="learning-card">
+        <span class="learning-tag tag-green">Confirmed</span>
+        <h3>Recharge flexibility proposition landed</h3>
+        <p>36% of respondents (16/44) cited short-duration recharge as the most distinctive element. "1 din / 7 din" was paraphrased back correctly and without prompting. The mechanics are understood.</p>
+      </div>
+      <div class="learning-card">
+        <span class="learning-tag tag-amber">Gap</span>
+        <h3>"Ghar ka net" is not striking enough</h3>
+        <p>Only 18% (8/44) identified the ad as WiFi. Of the 17 who said "net," most leaned straight into recharge as what was different — the home internet framing isn't registering as the anchor.</p>
+      </div>
+      <div class="learning-card">
+        <span class="learning-tag tag-amber">Gap</span>
+        <h3>Match/Exam framing added load, not clarity</h3>
+        <p>Use-case examples competed with category formation rather than supporting it. 4 respondents visibly confused — "match" was read as product context, not a usage illustration. Cognitive bandwidth was already consumed by category identification.</p>
+      </div>
+      <div class="learning-card">
+        <span class="learning-tag tag-blue">Insight</span>
+        <h3>Existing recharge schemas hijacked meaning</h3>
+        <p>Without a category anchor, 18% defaulted to mobile or DTH recharge. "Recharge" as a word automatically inherits mobile top-up associations in India — the ad inherited those schemas instead of building its own.</p>
+      </div>
+      <div class="learning-card">
+        <span class="learning-tag tag-blue">Insight</span>
+        <h3>Copy decoded, product not inferred</h3>
+        <p>~23% paraphrased the lines verbatim but could not name the product. Mani reproduced "jitne din chahiye utne din wala" word for word — then said "samajh nahi aaya." Linguistic comprehension does not equal category understanding.</p>
+      </div>
+      <div class="learning-card">
+        <span class="learning-tag tag-teal">Insight</span>
+        <h3>95% know WiFi. Creative didn't bridge it.</h3>
+        <p>42/44 respondents knew what WiFi is. The failure was connection, not awareness. Respondents who correctly identified this as a WiFi ad were, in most cases, already existing home broadband users — prior familiarity did the work, not the creative.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── RESULTS ── -->
+<section id="results">
+  <div class="container">
+    <span class="section-label">The numbers</span>
+    <h2 class="section-title">Results</h2>
+    <p class="section-desc">Quantitative findings across 44 on-ground interviews, static creative (3 variants tested in rotation).</p>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-num">44</div>
+        <div class="stat-label">Total respondents</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" style="color:var(--green)">18%</div>
+        <div class="stat-label">Identified as WiFi ad</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" style="color:var(--accent)">~13%</div>
+        <div class="stat-label">Full comprehension (WiFi + flexibility)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" style="color:var(--teal)">95%</div>
+        <div class="stat-label">Already know what WiFi is</div>
+      </div>
+    </div>
+
+    <div class="pivot-block">
+      <div class="pivot-title">Q1 — "Kis cheez ka ad hai yeh?" <span style="color:var(--subtle);font-weight:400">(n = 44, unaided)</span></div>
+      <div class="pivot-desc">First category response on seeing the creative</div>
+      <div class="bar-chart">
+        <div class="bar-row">
+          <span class="bar-label">Net</span>
+          <div class="bar-track"><div class="bar-fill bar-net" style="width:38.6%"></div><span class="bar-val">17 · 38.6%</span></div>
+        </div>
+        <div class="bar-row">
+          <span class="bar-label">Recharge</span>
+          <div class="bar-track"><div class="bar-fill bar-recharge" style="width:36.4%"></div><span class="bar-val">16 · 36.4%</span></div>
+        </div>
+        <div class="bar-row">
+          <span class="bar-label">WiFi</span>
+          <div class="bar-track"><div class="bar-fill bar-wifi" style="width:18.2%"></div><span class="bar-val">8 · 18.2%</span></div>
+        </div>
+        <div class="bar-row">
+          <span class="bar-label">Did not understand</span>
+          <div class="bar-track"><div class="bar-fill bar-muted" style="width:6.8%"></div><span class="bar-val">3 · 6.8%</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pivot-block">
+      <div class="pivot-title">Q2 — "Ismein aapko kuch alag laga?" <span style="color:var(--subtle);font-weight:400">(n = 44)</span></div>
+      <div class="pivot-desc">What stood out as distinctive from the creative</div>
+      <div class="bar-chart">
+        <div class="bar-row">
+          <span class="bar-label">Nothing different</span>
+          <div class="bar-track"><div class="bar-fill bar-muted" style="width:36.4%"></div><span class="bar-val">16 · 36.4%</span></div>
+        </div>
+        <div class="bar-row">
+          <span class="bar-label">Recharge (Flexibility)</span>
+          <div class="bar-track"><div class="bar-fill bar-recharge" style="width:34.1%"></div><span class="bar-val">15 · 34.1%</span></div>
+        </div>
+        <div class="bar-row">
+          <span class="bar-label">Did not understand</span>
+          <div class="bar-track"><div class="bar-fill bar-muted" style="width:15.9%"></div><span class="bar-val">7 · 15.9%</span></div>
+        </div>
+        <div class="bar-row">
+          <span class="bar-label">Net (multiple devices)</span>
+          <div class="bar-track"><div class="bar-fill bar-net" style="width:9.1%"></div><span class="bar-val">4 · 9.1%</span></div>
+        </div>
+        <div class="bar-row">
+          <span class="bar-label">Recharge (F) + Net</span>
+          <div class="bar-track"><div class="bar-fill bar-teal" style="width:2.3%"></div><span class="bar-val">1 · 2.3%</span></div>
+        </div>
+        <div class="bar-row">
+          <span class="bar-label">WiFi (multiple devices)</span>
+          <div class="bar-track"><div class="bar-fill bar-wifi" style="width:2.3%"></div><span class="bar-val">1 · 2.3%</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pivot-block">
+      <div class="pivot-title">Cross-table — Category identified × What was different</div>
+      <div class="pivot-desc">How product identification maps to what respondents found distinctive</div>
+      <div style="overflow-x:auto">
+        <table class="cross-table">
+          <thead>
+            <tr>
+              <th>Category ID'd</th>
+              <th>Nothing different</th>
+              <th>Recharge (Flexibility)</th>
+              <th>Net (multiple devices)</th>
+              <th>Did not understand</th>
+              <th>WiFi (multi-device)</th>
+              <th>R(F) + Net</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="row-label lbl-net">Net</td>
+              <td>4</td><td class="hl">10</td><td>1</td><td>1</td><td>1</td><td>—</td>
+              <td class="total-col">17</td>
+            </tr>
+            <tr>
+              <td class="row-label lbl-recharge">Recharge</td>
+              <td class="hl">9</td><td>—</td><td>3</td><td>4</td><td>—</td><td>—</td>
+              <td class="total-col">16</td>
+            </tr>
+            <tr>
+              <td class="row-label lbl-wifi">WiFi</td>
+              <td>1</td><td class="hl">5</td><td>—</td><td>1</td><td>—</td><td>1</td>
+              <td class="total-col">8</td>
+            </tr>
+            <tr>
+              <td class="row-label lbl-none">Did not understand</td>
+              <td>2</td><td>—</td><td>—</td><td>1</td><td>—</td><td>—</td>
+              <td class="total-col">3</td>
+            </tr>
+            <tr class="grand-row">
+              <td style="text-align:left;font-weight:700">Grand Total</td>
+              <td>16</td><td>15</td><td>4</td><td>7</td><td>1</td><td>1</td>
+              <td class="total-col">44</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── THE CREATIVES ── -->
+<section id="creatives">
+  <div class="container">
+    <span class="section-label">The creatives</span>
+    <h2 class="section-title">What We Tested</h2>
+    <p class="section-desc">
+      Each person tested one creative. All three statics use the same visual — a warm illustrated family scene,
+      no router, no WiFi symbol. Stats below are per creative, from the interviewer's respondents.
+    </p>
+
+    <!-- By-interviewer pivot table -->
+    <div class="pivot-block">
+      <div class="pivot-title">Category identification by creative <span style="color:var(--subtle);font-weight:400">(Q1, unaided)</span></div>
+      <div class="pivot-desc">Split by interviewer — each person tested one creative</div>
+      <div style="overflow-x:auto">
+        <table class="cross-table">
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>deepak.mehta<br><span style="font-weight:400;letter-spacing:0">n = 15</span></th>
+              <th>karishni.puri<br><span style="font-weight:400;letter-spacing:0">n = 14</span></th>
+              <th>smit.patel<br><span style="font-weight:400;letter-spacing:0">n = 15</span></th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="row-label lbl-net">Net</td>
+              <td class="hl">9 (60%)</td>
+              <td style="color:var(--subtle)">—</td>
+              <td>8 (53%)</td>
+              <td class="total-col">17</td>
+            </tr>
+            <tr>
+              <td class="row-label lbl-recharge">Recharge</td>
+              <td>4 (27%)</td>
+              <td class="hl">8 (57%)</td>
+              <td>4 (27%)</td>
+              <td class="total-col">16</td>
+            </tr>
+            <tr>
+              <td class="row-label lbl-wifi">WiFi</td>
+              <td>2 (13%)</td>
+              <td>3 (21%)</td>
+              <td>3 (20%)</td>
+              <td class="total-col">8</td>
+            </tr>
+            <tr>
+              <td class="row-label lbl-none">Did not understand</td>
+              <td style="color:var(--subtle)">—</td>
+              <td style="color:#DC2626;font-weight:700">3 (21%)</td>
+              <td style="color:var(--subtle)">—</td>
+              <td class="total-col">3</td>
+            </tr>
+            <tr class="grand-row">
+              <td style="text-align:left;font-weight:700">Total</td>
+              <td>15</td><td>14</td><td>15</td>
+              <td class="total-col">44</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Individual creative cards -->
+    <div class="creatives-grid">
+
+      <!-- Creative 01 — deepak — पूरे घर के नेट का रिचार्ज -->
+      <div class="creative-card">
+        <div class="creative-visual">
+          <div class="creative-type-badge">◼ Static · 01</div>
+          <div>
+            <div class="creative-headline">पूरे घर के नेट का रिचार्ज।</div>
+            <div class="creative-tagline">
+              1 दिन चलाना हो, तो 1 दिन का रिचार्ज।<br>
+              7 दिन चाहिए, तो 7 दिन का।<br>
+              नेट भी अब ज़रूरत के हिसाब से।
+            </div>
+          </div>
+          <div class="creative-brand">रिचार्ज वाला घर का नेट</div>
+        </div>
+        <div class="creative-meta">
+          <div class="creative-meta-header">
+            <span class="email-badge">deepak.mehta@wiom.in</span>
+            <span class="n-badge">n = 15</span>
+          </div>
+          <div class="mini-bars">
+            <div class="mini-bar-label">Category identified as</div>
+            <div class="mini-bar-row">
+              <span class="mini-cat lbl-net">Net</span>
+              <div class="mini-track"><div class="mini-fill mini-net" style="width:60%"></div></div>
+              <span class="mini-val">9 · 60%</span>
+            </div>
+            <div class="mini-bar-row">
+              <span class="mini-cat lbl-recharge">Recharge</span>
+              <div class="mini-track"><div class="mini-fill mini-recharge" style="width:27%"></div></div>
+              <span class="mini-val">4 · 27%</span>
+            </div>
+            <div class="mini-bar-row">
+              <span class="mini-cat lbl-wifi">WiFi</span>
+              <div class="mini-track"><div class="mini-fill mini-wifi" style="width:13%"></div></div>
+              <span class="mini-val">2 · 13%</span>
+            </div>
+            <div class="mini-bar-row">
+              <span class="mini-cat lbl-none">Confused</span>
+              <div class="mini-track"><div class="mini-fill mini-muted" style="width:0%"></div></div>
+              <span class="mini-val">0 · 0%</span>
+            </div>
+          </div>
+          <div class="key-finding">
+            <span class="kf-label">Finding</span>
+            <span class="kf-text">Strongest home internet signal of the three. 60% said "Net," zero confusion.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Creative 02 — karishni — मैच हो तो -->
+      <div class="creative-card">
+        <div class="creative-visual">
+          <div class="creative-type-badge">◼ Static · 02</div>
+          <div>
+            <div class="creative-headline">मैच हो तो 1 दिन का रिचार्ज।<br>Exam हो तो 14 दिन का।</div>
+            <div class="creative-tagline">
+              घर में जितने दिन नेट चाहिए,<br>
+              उतने दिन का रिचार्ज।<br>
+              जितनी ज़रूरत, उतना रिचार्ज।
+            </div>
+          </div>
+          <div class="creative-brand">रिचार्ज वाला घर का नेट</div>
+        </div>
+        <div class="creative-meta">
+          <div class="creative-meta-header">
+            <span class="email-badge">karishni.puri@wiom.in</span>
+            <span class="n-badge">n = 14</span>
+          </div>
+          <div class="mini-bars">
+            <div class="mini-bar-label">Category identified as</div>
+            <div class="mini-bar-row">
+              <span class="mini-cat lbl-recharge">Recharge</span>
+              <div class="mini-track"><div class="mini-fill mini-recharge" style="width:57%"></div></div>
+              <span class="mini-val">8 · 57%</span>
+            </div>
+            <div class="mini-bar-row">
+              <span class="mini-cat lbl-wifi">WiFi</span>
+              <div class="mini-track"><div class="mini-fill mini-wifi" style="width:21%"></div></div>
+              <span class="mini-val">3 · 21%</span>
+            </div>
+            <div class="mini-bar-row">
+              <span class="mini-cat lbl-none">Confused</span>
+              <div class="mini-track"><div class="mini-fill mini-muted" style="width:21%"></div></div>
+              <span class="mini-val" style="color:#DC2626">3 · 21%</span>
+            </div>
+            <div class="mini-bar-row">
+              <span class="mini-cat lbl-net">Net</span>
+              <div class="mini-track"><div class="mini-fill mini-net" style="width:0%"></div></div>
+              <span class="mini-val">0 · 0%</span>
+            </div>
+          </div>
+          <div class="key-finding">
+            <span class="kf-label">Finding</span>
+            <span class="kf-text">Zero "Net" responses. Occasion examples (match/exam) pulled focus away from category entirely.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Creative 03 — smit — पूरे घर का नेट -->
+      <div class="creative-card">
+        <div class="creative-visual">
+          <div class="creative-type-badge">◼ Static · 03</div>
+          <div>
+            <div class="creative-headline">पूरे घर का नेट।<br>जितनी ज़रूरत, उतना रिचार्ज।</div>
+            <div class="creative-tagline">
+              1 दिन, 2 दिन, 7 दिन अपने हिसाब से रिचार्ज।<br>
+              सबका काम बिना रुके।
+            </div>
+          </div>
+          <div class="creative-brand">रिचार्ज वाला घर का नेट</div>
+        </div>
+        <div class="creative-meta">
+          <div class="creative-meta-header">
+            <span class="email-badge">smit.patel@wiom.in</span>
+            <span class="n-badge">n = 15</span>
+          </div>
+          <div class="mini-bars">
+            <div class="mini-bar-label">Category identified as</div>
+            <div class="mini-bar-row">
+              <span class="mini-cat lbl-net">Net</span>
+              <div class="mini-track"><div class="mini-fill mini-net" style="width:53%"></div></div>
+              <span class="mini-val">8 · 53%</span>
+            </div>
+            <div class="mini-bar-row">
+              <span class="mini-cat lbl-recharge">Recharge</span>
+              <div class="mini-track"><div class="mini-fill mini-recharge" style="width:27%"></div></div>
+              <span class="mini-val">4 · 27%</span>
+            </div>
+            <div class="mini-bar-row">
+              <span class="mini-cat lbl-wifi">WiFi</span>
+              <div class="mini-track"><div class="mini-fill mini-wifi" style="width:20%"></div></div>
+              <span class="mini-val">3 · 20%</span>
+            </div>
+            <div class="mini-bar-row">
+              <span class="mini-cat lbl-none">Confused</span>
+              <div class="mini-track"><div class="mini-fill mini-muted" style="width:0%"></div></div>
+              <span class="mini-val">0 · 0%</span>
+            </div>
+          </div>
+          <div class="key-finding">
+            <span class="kf-label">Finding</span>
+            <span class="kf-text">Broadest reading — Net (53%) and WiFi (20%) both present. Zero confusion. Flexibility also landed for 40%.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Video -->
+      <div class="creative-card">
+        <video
+          src="7.2-invideo-video_tools.mp4"
+          controls
+          style="width:100%;display:block;background:#000;max-height:300px;object-fit:contain;"
+        ></video>
+        <div class="creative-meta">
+          <div class="creative-meta-header">
+            <span class="n-badge">Video · 04</span>
+            <span class="no-wifi-tag">✓ No router in frame</span>
+          </div>
+          <p class="video-note">Field data not collected for the video creative in this sprint.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── NEXT STEPS ── -->
+<section id="next">
+  <div class="container">
+    <span class="section-label">What's next</span>
+    <h2 class="section-title">Two Things to Align On</h2>
+    <p class="section-desc">
+      Before the next creative sprint, we need answers to these two questions.
+      Getting them wrong means we'll optimise for the wrong thing again.
+    </p>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:20px">
+
+      <div class="learning-card" style="border-left:4px solid var(--accent)">
+        <span class="learning-tag tag-blue">Open question</span>
+        <h3>What is the job of a performance ad?</h3>
+        <p style="margin-bottom:12px">
+          Is the goal to bring a user onto the app — i.e. performance
+          is a direct conversion play and category education is a separate problem?
+          Or should the ad carry both?
+        </p>
+        <p style="font-size:12px;color:var(--subtle);line-height:1.6">
+          This matters because if the answer is app install, the creative should lead with
+          an action trigger, not a category explanation. The two require different formats,
+          different copy hierarchies, and different success metrics.
+        </p>
+      </div>
+
+      <div class="learning-card" style="border-left:4px solid var(--amber)">
+        <span class="learning-tag tag-amber">Open question</span>
+        <h3>What order do we solve — category, differentiation, examples?</h3>
+        <p style="margin-bottom:12px">
+          Right now the creative tries to do all three at once:
+          establish that this is home internet (category),
+          explain that it is flexible (differentiation),
+          and illustrate with match and exam (examples).
+          Nothing fully lands because all three are competing.
+        </p>
+        <p style="font-size:12px;color:var(--subtle);line-height:1.6">
+          Agreeing on which of these comes first — and which ones belong in
+          a single ad versus a campaign sequence — will make the next brief much sharper.
+        </p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<footer class="page-footer">
+  <div class="container">
+    Wiom Communications · Creative Sprint Report · May 2026 · Internal use only
+  </div>
+</footer>
+
+</body>
+</html>
